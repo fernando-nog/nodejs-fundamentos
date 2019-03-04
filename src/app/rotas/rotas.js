@@ -44,6 +44,14 @@ module.exports = (app) => {
                 .catch(erro => console.log(erro));
     });
     
+    app.put('/livros', function(req, resp) {
+        console.log(req.body);
+        const livroDao = new LivroDao(db);
+        livroDao.atualiza(req.body)
+                .then(resp.redirect('/livros'))
+                .catch(erro => console.log(erro));
+    });
+
     app.delete('/livros/:id', function(req, resp) {
         const id = req.params.id;
     
@@ -54,5 +62,19 @@ module.exports = (app) => {
     
     });    
     
+    app.get('/livros/form/:id', function(req, resp) {
+        const id = req.params.id;
+        const livroDao = new LivroDao(db);
+    
+        livroDao.buscaPorId(id)
+            .then(livro => 
+                resp.marko(
+                    require('../views/livros/form/form.marko'),
+                    { livro: livro }
+                )
+            )
+            .catch(erro => console.log(erro));
+    
+    });
     
 };
